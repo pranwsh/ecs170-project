@@ -1,5 +1,5 @@
 '''
-Configurable MLP for Stage 2 handwritten digit classification (784 pixels -> 10 digits).
+Stage 2 MLP w/ adjustable layers for classifying handwritten digits (784 pixels -> 10 digits).
 '''
 
 from local_code.base_class.method import method
@@ -10,13 +10,13 @@ import numpy as np
 
 class Method_MLP(method, nn.Module):
     data = None
-    # experiment knobs; change these on the object before calling run()
+    # experiment knobs, tweak these on the object b4 calling run()
     max_epoch = 20
     batch_size = 128
     learning_rate = 1e-3
     optimizer_class = torch.optim.Adam
     optimizer_kwargs = {}
-    # 'cpu', 'cuda' or 'mps'
+    # 'cpu', 'cuda' or 'mps' (mps = ur Mac's GPU)
     device = 'cpu'
 
     def __init__(self, mName, mDescription, input_dim=784, hidden_dims=(256, 128), output_dim=10,
@@ -32,9 +32,9 @@ class Method_MLP(method, nn.Module):
             in_dim = h
         layers.append(nn.Linear(in_dim, output_dim))
         self.layers = nn.Sequential(*layers)
-        # CrossEntropyLoss applies softmax itself, so forward() returns raw logits
+        # CrossEntropyLoss does softmax on its own, so forward() just gives raw logits
         self.loss_function = nn.CrossEntropyLoss()
-        # per-epoch curves for the convergence plots; val_* stays empty without data['val']
+        # per-epoch numbers for the convergence plots, val_* stays empty w/o data['val']
         self.history = {'train_loss': [], 'train_acc': [], 'val_loss': [], 'val_acc': []}
 
     def forward(self, x):
@@ -52,7 +52,7 @@ class Method_MLP(method, nn.Module):
         logits = self.forward(X)
         return self.loss_function(logits, y).item(), (logits.argmax(1) == y).float().mean().item()
 
-    # named train_model, not train, because nn.Module.eval() calls self.train(False)
+    # called train_model not train bc nn.Module.eval() calls self.train(False)
     def train_model(self, X, y, X_val=None, y_val=None):
         self.to(self.device)
         X, y = self._tensors(X, y)
