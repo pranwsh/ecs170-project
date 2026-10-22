@@ -12,7 +12,7 @@ import numpy as np
 from local_code.stage_2_code.Dataset_Loader import Dataset_Loader
 
 
-# Keep  figures together under the template's result folder.
+# Keep figures together under the template's result folder.
 RESULT_DIRECTORY = Path(__file__).resolve().parents[2] / 'result' / 'stage_2_result' / 'daniel'
 
 

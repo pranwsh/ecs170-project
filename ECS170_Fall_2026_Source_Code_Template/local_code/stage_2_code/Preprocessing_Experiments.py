@@ -11,7 +11,7 @@ from local_code.stage_2_code.Dataset_Loader import Dataset_Loader
 def prepare_comparison(*, data_dir=None, validation_size=0.2, seed=2):
     """Return raw and normalized versions of the same train/validation split.
 
-    The 'test' key contains VALIDATION data to match template Method_MLP.data.
+    The 'val' key contains validation data for the shared Stage 2 model.
     This function only opens train.csv. The supplied test.csv remains untouched.
     """
     if not 0 < validation_size < 1:
@@ -29,18 +29,18 @@ def prepare_comparison(*, data_dir=None, validation_size=0.2, seed=2):
         random_state=seed, stratify=data['y'])
 
     # Preserve the original 0-255 inputs as the baseline experiment.
-    # The template calls its evaluation group 'test'; here it holds validation
-    # data from train.csv, not the separate test.csv dataset.
+    # Use 'val' for the held-out training examples so the shared model can
+    # record validation loss and accuracy after each epoch.
     raw = {
         'train': {'X': X_train, 'y': y_train},
-        'test': {'X': X_validation, 'y': y_validation}
+        'val': {'X': X_validation, 'y': y_validation}
     }
 
     # Create 0-1 inputs from the same split. Copy labels so changes to one
     # experiment's data do not accidentally affect the other experiment.
     normalized = {
         'train': {'X': X_train / 255.0, 'y': y_train.copy()},
-        'test': {'X': X_validation / 255.0, 'y': y_validation.copy()}
+        'val': {'X': X_validation / 255.0, 'y': y_validation.copy()}
     }
 
     return {'raw': raw, 'normalized': normalized}

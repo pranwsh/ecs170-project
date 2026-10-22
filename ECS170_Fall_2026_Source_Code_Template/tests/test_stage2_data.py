@@ -98,8 +98,10 @@ class LoaderTests(unittest.TestCase):
         first = prepare_comparison(data_dir=self.directory)
         again = prepare_comparison(data_dir=self.directory)
         raw, normalized = first['raw'], first['normalized']
-        # The template's 'test' key holds validation data in these experiments.
-        for split, count in [('train', 80), ('test', 20)]:
+        # Keep validation separate from the final testing dataset.
+        self.assertEqual(set(raw), {'train', 'val'})
+        self.assertEqual(set(normalized), {'train', 'val'})
+        for split, count in [('train', 80), ('val', 20)]:
             self.assertEqual(len(raw[split]['y']), count)
             np.testing.assert_array_equal(raw[split]['y'], normalized[split]['y'])
             np.testing.assert_array_equal(raw[split]['X'] / 255, normalized[split]['X'])
@@ -108,7 +110,7 @@ class LoaderTests(unittest.TestCase):
         # Use the unique first-pixel IDs from setUp to check that the groups
         # do not overlap and together contain all 100 original examples.
         train_ids = set(raw['train']['X'][:, 0])
-        validation_ids = set(raw['test']['X'][:, 0])
+        validation_ids = set(raw['val']['X'][:, 0])
         self.assertFalse(train_ids & validation_ids)
         self.assertEqual(len(train_ids | validation_ids), 100)
 
@@ -126,7 +128,7 @@ class LoaderTests(unittest.TestCase):
         # Both versions should own separate arrays, so changing one's pixels
         # or labels cannot accidentally change the other experiment's inputs.
         comparison = prepare_comparison(data_dir=self.directory)
-        for split in ('train', 'test'):
+        for split in ('train', 'val'):
             for key in ('X', 'y'):
                 self.assertFalse(np.shares_memory(comparison['raw'][split][key],
                                                   comparison['normalized'][split][key]))
