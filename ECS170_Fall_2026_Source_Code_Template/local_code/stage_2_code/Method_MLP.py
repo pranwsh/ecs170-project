@@ -17,9 +17,11 @@ class Method_MLP(method, nn.Module):
     optimizer_kwargs = {}
     # 'cpu', 'cuda' or 'mps' (mps = ur Mac's GPU)
     device = 'cpu'
+    # set False to hide the per-epoch lines when running a big experiment sweep
+    verbose = True
 
     def __init__(self, mName, mDescription, input_dim=784, hidden_dims=(256, 128), output_dim=10,
-                 activation=nn.ReLU, dropout=0.0):
+                 activation=nn.ReLU, dropout=0.0, loss_function=None):
         method.__init__(self, mName, mDescription)
         nn.Module.__init__(self)
 
@@ -43,8 +45,12 @@ class Method_MLP(method, nn.Module):
 
         self.layers = nn.Sequential(*layers)
 
-        # CrossEntropyLoss does softmax on its own, so forward() just gives raw logits
-        self.loss_function = nn.CrossEntropyLoss()
+        # CrossEntropyLoss does softmax on its own, so forward() just gives raw logits.
+        # Pass loss_function=... to swap it for one of Loss_Functions.build_loss();
+        # every loss there also takes (logits, integer labels).
+        if loss_function is None:
+            loss_function = nn.CrossEntropyLoss()
+        self.loss_function = loss_function
 
         # per-epoch numbers for the convergence plots, val_* stays empty w/o data['val']
         self.history = {
@@ -122,7 +128,8 @@ class Method_MLP(method, nn.Module):
                 self.history['val_acc'].append(val_acc)
                 msg += f' Val Loss: {val_loss:.4f} Val Accuracy: {val_acc:.4f}'
 
-            print(msg)
+            if self.verbose:
+                print(msg)
 
     @torch.no_grad()
     def test(self, X):
