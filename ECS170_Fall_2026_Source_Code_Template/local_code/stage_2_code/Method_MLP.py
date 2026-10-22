@@ -23,7 +23,7 @@ class Method_MLP(method, nn.Module):
         method.__init__(self, mName, mDescription)
         nn.Module.__init__(self)
 
-        # building the layers manually because Sequential can be weird sometimes
+        # collect the layers in a list first, then hand them to Sequential below
         layers = []
         in_dim = input_dim
 
@@ -60,7 +60,7 @@ class Method_MLP(method, nn.Module):
         return out
 
     def _tensors(self, X, y=None):
-        # helper to convert stuff to tensors. sometimes numpy arrays throw warnings if not contiguous
+        # helper to turn lists/arrays into tensors w/ the right dtype and device
         X_tensor = torch.as_tensor(np.asarray(X), dtype=torch.float32, device=self.device)
 
         if y is None:
