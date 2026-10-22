@@ -16,7 +16,7 @@ import sys
 import time
 from pathlib import Path
 
-# let the script run from PyCharm or the terminal without changing the working directory
+# let the script run using terminal so that it dont hcanmge the working directory at akll by no cost here 
 TEMPLATE_ROOT = Path(__file__).resolve().parents[2]
 if str(TEMPLATE_ROOT) not in sys.path:
     sys.path.insert(0, str(TEMPLATE_ROOT))
@@ -94,7 +94,7 @@ def save_convergence_plots(history, path):
     loss_ax.grid(alpha=0.3)
     loss_ax.legend()
 
-    # Plotting accuracy separately just to be safe with loop structures
+    # plotting accuracy separately just to be safe and 100 perc confirmed  with loop structures
     if 'train_acc' in history:
         acc_ax.plot(epochs, history['train_acc'], marker='o', markersize=3, label='train')
     if history.get('val_acc'):
@@ -129,11 +129,11 @@ def main():
     run_dir = RESULT_ROOT / name
     run_dir.mkdir(parents=True, exist_ok=True)
 
-    #---- parameter section -------------------------------
+    # parameter section ******
     set_seed(config['seed'])
-    #------------------------------------------------------
+ 
 
-    # ---- object initialization section -------------------
+    #object initialization section (oop setup)
     train_obj = Dataset_Loader('digits (train)', 'train.csv', split='train', normalize=config['normalize'])
     test_obj = Dataset_Loader('digits (test)', 'test.csv', split='test', normalize=config['normalize'])
 
@@ -178,7 +178,7 @@ def main():
     for key, value in scores.items():
         print(f'{key}: {value:.4f}')
 
-    # ---- save outputs ------------------------------------
+    # save outputs 
     learned = setting_obj.learned_result
     (run_dir / 'config.json').write_text(json.dumps(config, indent=2) + '\n')
     (run_dir / 'metrics.json').write_text(json.dumps(scores, indent=2) + '\n')
@@ -197,7 +197,7 @@ def main():
     print(Error_Analysis.write_report(cm, run_dir / 'error_analysis.txt'))
     print(f'saved run to {run_dir}')
     print('************ Finish ************')
-    # ------------------------------------------------------
+    
 
 
 if __name__ == '__main__':
