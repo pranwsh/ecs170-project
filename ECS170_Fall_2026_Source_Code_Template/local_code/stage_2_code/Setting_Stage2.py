@@ -1,5 +1,5 @@
 # Experiment setting for Stage 2: use the provided train/test files.
-# TODO: Clean this up later if we change the validation strategy, but it works for now.
+# Clean this up later if we change the validation strategy, but it works for now.
 
 import numpy as np
 from sklearn.model_selection import train_test_split
@@ -67,8 +67,8 @@ class Setting_Stage2(setting):
         # run MethodModule ('test' is the key the template's Method_MLP expects)
         self.method.data = {'train': {'X': X_train, 'y': y_train}, 'test': {'X': X_eval, 'y': y_eval}}
         if self.use_validation:
-            # Method_MLP also tracks val loss/accuracy each epoch when data['val'] is given.
-            # Only done for the validation split so test.csv never influences training choices.
+            # Method_MLP also tracks val loss/accuracy each epoch when data 'val' is given.
+            #this was basically  only done for the validation split so test.csv never influences training choices.
             self.method.data['val'] = {'X': X_eval, 'y': y_eval}
         learned_result = self.method.run()
 
@@ -76,7 +76,7 @@ class Setting_Stage2(setting):
         learned_result['pred_y'] = to_numpy(learned_result['pred_y'])
         learned_result['true_y'] = to_numpy(learned_result['true_y'])
 
-        # per-epoch train/val loss and accuracy from Method_MLP, used for the convergence plots
+        # perepoch train/val loss and accuracy from Method_MLP, used for the convergence plots
         history = getattr(self.method, 'history', None) or {}
 
         # Doing a simple loop here instead of dict comprehension just in case it errors out
@@ -88,7 +88,7 @@ class Setting_Stage2(setting):
         learned_result['history'] = processed_history
         self.learned_result = learned_result
 
-        # save raw ResultModule
+        #saving info hhere 
         self.result.data = learned_result
         self.result.save()
 
