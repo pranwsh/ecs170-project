@@ -1,4 +1,4 @@
-"""MLP tests on synthetic data: python -m unittest discover -s tests -v."""
+"""MLP tests w/ fake data: python -m unittest discover -s tests -v."""
 
 import unittest
 
@@ -10,7 +10,7 @@ from local_code.stage_2_code.Method_MLP import Method_MLP
 
 class MLPTests(unittest.TestCase):
     def test_learns_separable_data_and_records_history(self):
-        # Each digit lights up its own block of pixels, so a working MLP must reach ~100%.
+        # each digit lights up its own block of pixels, so a working MLP should hit ~100%
         torch.manual_seed(0)
         rng = np.random.default_rng(0)
         y = np.repeat(np.arange(10), 30)
@@ -29,7 +29,7 @@ class MLPTests(unittest.TestCase):
         self.assertEqual(len(model.history['train_loss']), 15)
         self.assertEqual(len(model.history['val_acc']), 15)
         self.assertLess(model.history['train_loss'][-1], model.history['train_loss'][0])
-        # the train() rename keeps nn.Module.eval() working
+        # the train() rename keeps nn.Module.eval() from breaking
         model.eval()
 
 
