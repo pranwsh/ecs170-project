@@ -77,7 +77,7 @@ def save_misclassified_examples(X, true_y, pred_y, path, count=25, seed=2):
         ax.imshow(np.asarray(X[index]).reshape(28, 28), cmap='gray')
         ax.set_title(f'true {true_y[index]}, pred {pred_y[index]}', fontsize=9)
 
-    fig.suptitle(f'Misclassified test images ({len(wrong)} total errors)')
+    fig.suptitle(f'Misclassified evaluation images ({len(wrong)} total errors)')
     fig.tight_layout()
     fig.savefig(path, dpi=150)
     plt.close(fig)
@@ -90,7 +90,7 @@ def write_report(cm, path, k=10):
     total_errors = int(cm.sum() - np.trace(cm))
 
     lines = [
-        f'Total test samples: {int(cm.sum())}',
+        f'Total evaluation samples: {int(cm.sum())}',
         f'Total errors: {total_errors}',
         '',
         'Per-digit accuracy (worst first):'
