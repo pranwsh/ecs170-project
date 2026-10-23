@@ -8,7 +8,7 @@ Each member is responsible for coding, testing, analysis, and contributing to th
 
 ---
 
-### Person 1 - Data Processing and Preprocessing Experiments
+### Daniel Park - Data Processing and Preprocessing Experiments
 
 **Primary File:** `Dataset_Loader.py`
 
@@ -85,7 +85,7 @@ Each member is responsible for coding, testing, analysis, and contributing to th
 
 | Member | Main Coding | Experiments / Analysis | Report |
 |---|---|---|---|
-| Person 1 | Data loader | Preprocessing comparisons and visualizations | Data and preprocessing |
+| Daniel Park | Data loader | Preprocessing comparisons and visualizations | Data and preprocessing |
 | Person 2 | MLP model | Architecture comparisons | Model and training |
 | Person 3 | Evaluation code | Optimizer, loss, and learning rate comparisons | Results and analysis |
 | Person 4 | Integration scripts | Pipeline validation and error analysis | Introduction, conclusion, final compilation |
