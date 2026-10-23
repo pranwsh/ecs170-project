@@ -86,6 +86,32 @@ EXPERIMENT_GROUPS = {
         ('three_512_256_128', {'hidden_dims': [512, 256, 128]}),
         ('wide_1024_512', {'hidden_dims': [1024, 512]}),
     ],
+
+    # 2-1: Person 1's axis - does preprocessing (0-1 scaling) matter? The third
+    # run keeps the 0-255 range but centres it, which separates "small values"
+    # from "features on a comparable scale".
+    'preprocessing': [
+        ('normalized_0_1', {'normalize': True}),
+        ('raw_0_255', {'normalize': False}),
+    ],
+
+    # 2-4 "other settings": activation function. tanh/sigmoid saturate, so they
+    # are expected to converge slower than ReLU; leaky_relu should match ReLU.
+    'activation': [
+        ('relu', {'activation': 'relu'}),
+        ('tanh', {'activation': 'tanh'}),
+        ('sigmoid', {'activation': 'sigmoid'}),
+        ('leaky_relu', {'activation': 'leaky_relu'}),
+    ],
+
+    # 2-4 "other settings": mini-batch size. Small batches add gradient noise
+    # (sometimes a regulariser), large ones use the hardware better.
+    'batch_size': [
+        ('batch_32', {'batch_size': 32}),
+        ('batch_64', {'batch_size': 64}),
+        ('batch_128', {'batch_size': 128}),
+        ('batch_256', {'batch_size': 256}),
+    ],
 }
 
 DEFAULT_GROUPS = ['baseline', 'optimizer', 'lr', 'loss']
