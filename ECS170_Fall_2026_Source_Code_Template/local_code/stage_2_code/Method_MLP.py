@@ -24,6 +24,7 @@ class Method_MLP(method, nn.Module):
                  activation=nn.ReLU, dropout=0.0, loss_function=None):
         method.__init__(self, mName, mDescription)
         nn.Module.__init__(self)
+        self.optimizer_kwargs = dict(self.optimizer_kwargs)
 
         # collect the layers in a list first, then hand them to Sequential below
         layers = []
@@ -88,6 +89,12 @@ class Method_MLP(method, nn.Module):
 
     # called train_model not train bc nn.Module.eval() calls self.train(False)
     def train_model(self, X, y, X_val=None, y_val=None):
+        if self.history['train_loss']:
+            for layer in self.layers:
+                if hasattr(layer, 'reset_parameters'):
+                    layer.reset_parameters()
+            self.history = {key: [] for key in self.history}
+
         self.to(self.device)
         X, y = self._tensors(X, y)
 
