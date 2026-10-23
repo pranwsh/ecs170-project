@@ -32,6 +32,28 @@ class MLPTests(unittest.TestCase):
         # the train() rename keeps nn.Module.eval() from breaking
         model.eval()
 
+    def test_each_model_and_each_training_run_starts_fresh(self):
+        Method_MLP('a', '').optimizer_kwargs['momentum'] = 0.9
+        self.assertEqual(Method_MLP('b', '').optimizer_kwargs, {})
+
+        torch.manual_seed(0)
+        rng = np.random.default_rng(0)
+        X = rng.random((40, 784), dtype=np.float32)
+        y = rng.integers(0, 10, 40)
+        model = Method_MLP('mlp', '', hidden_dims=(8,))
+        model.max_epoch = 2
+        model.verbose = False
+        model.data = {'train': {'X': X, 'y': y}, 'test': {'X': X, 'y': y}}
+        model.run()
+        model.run()
+        self.assertEqual(len(model.history['train_loss']), 2)
+
+        trained = model.layers[0].weight.detach().clone()
+        model.max_epoch = 0
+        model.train_model(X, y)
+        self.assertFalse(torch.equal(trained, model.layers[0].weight))
+        self.assertEqual(model.history['train_loss'], [])
+
 
 if __name__ == '__main__':
     unittest.main()
