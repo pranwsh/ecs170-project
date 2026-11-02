@@ -1,1 +1,4 @@
 ECS170_Fall_2026_Source_Code_Template/data/stage_2_data/*.csv filter=lfs diff=lfs merge=lfs -text
+ECS170_Fall_2026_Source_Code_Template/data/stage_3_data/CIFAR filter=lfs diff=lfs merge=lfs -text
+ECS170_Fall_2026_Source_Code_Template/data/stage_3_data/MNIST filter=lfs diff=lfs merge=lfs -text
+ECS170_Fall_2026_Source_Code_Template/data/stage_3_data/ORL filter=lfs diff=lfs merge=lfs -text
