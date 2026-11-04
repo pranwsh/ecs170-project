@@ -1,4 +1,4 @@
-"""Daniel's loader tests: python -m unittest discover -s tests -p test_stage3_data.py -v."""
+"""Loader and visualization tests: python -m unittest discover -s tests -p test_stage3_data.py -v."""
 
 import pickle
 import tempfile
@@ -11,6 +11,8 @@ from local_code.base_class.dataset import dataset
 from local_code.stage_3_code.Dataset_Loader_MNIST import Dataset_Loader_MNIST
 from local_code.stage_3_code.Dataset_Loader_ORL import Dataset_Loader_ORL
 from local_code.stage_3_code.Dataset_Loader_CIFAR import Dataset_Loader_CIFAR
+from local_code.stage_3_code.Visualize_Data import save_visualizations
+import matplotlib.pyplot as plt
 
 
 class LoaderTests(unittest.TestCase):
@@ -124,6 +126,35 @@ class LoaderTests(unittest.TestCase):
         (self.directory / 'MNIST').write_bytes(b'version https://git-lfs.github.com/spec/v1\n')
         with self.assertRaisesRegex(ValueError, 'Git LFS pointer'):
             Dataset_Loader_MNIST(data_dir=self.directory).load()
+
+
+class VisualizationTests(unittest.TestCase):
+    def test_grayscale_rgb_and_forty_class_figures(self):
+        with tempfile.TemporaryDirectory() as directory:
+            for name, shape, count, offset in (('MNIST', (1, 28, 28), 10, 0),
+                                              ('CIFAR', (3, 32, 32), 10, 0),
+                                              ('ORL', (1, 112, 92), 40, 1)):
+                with self.subTest(dataset=name):
+                    # Grayscale samples are mid-gray; RGB samples are pure red.
+                    images = np.full((count, *shape), 0.5, dtype=np.float32)
+                    expected_color = (0.5, 0.5, 0.5)
+                    if name == 'CIFAR':
+                        images[:, 0] = 1
+                        images[:, 1:] = 0
+                        expected_color = (1, 0, 0)
+                    data = {'X': images, 'y': np.arange(count, dtype=np.int64)}
+                    output_dir = Path(directory) / 'figures'
+                    paths = save_visualizations(data, name, output_dir, label_offset=offset)
+
+                    # Decode both PNGs and check that the samples retain their colors.
+                    self.assertEqual([path.name for path in paths],
+                                     [f'{name.lower()}_samples.png', f'{name.lower()}_class_counts.png'])
+                    for path in paths:
+                        self.assertGreater(path.stat().st_size, 1000)
+                        self.assertGreater(plt.imread(path).size, 0)
+                    grid = plt.imread(paths[0])[:, :, :3]
+                    matching_pixels = np.all(np.isclose(grid, expected_color, atol=1 / 255), axis=2)
+                    self.assertGreater(np.count_nonzero(matching_pixels), 1000)
 
 
 if __name__ == '__main__':
