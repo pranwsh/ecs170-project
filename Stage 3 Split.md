@@ -6,7 +6,7 @@ Build and evaluate CNNs for MNIST digits, ORL faces, and CIFAR-10 objects using 
 
 This is an equal-effort plan: each person has **10 planning points**, including coding, experiments, testing, and writing. Points estimate relative effort, not measured hours or guaranteed completion time. After the first working baselines, compare actual effort and move a small shared task if someone is overloaded. Waiting for training to finish is not a substitute for implementation or analysis work.
 
-Unlike a purely functional split, three people each own a complete dataset/model result. The easier/smaller datasets receive more shared tasks; the CIFAR owner receives fewer. The fourth person builds the common training and execution pipeline rather than another model.
+Daniel is working ahead because he will be unavailable for the rest of the week. He prepares the shared data loaders and trainer plus the MNIST architecture. Person 4 takes over the MNIST experiments and results, alongside the execution pipeline and integration. Persons 2 and 3 retain their ORL and CIFAR responsibilities. The points below are revised estimates for this swap.
 
 ## Verified dataset details
 
@@ -24,14 +24,22 @@ The actual MNIST arrays are float64 with values from 0 to 255; they are not alre
 
 | Member | Main ownership | Shared responsibility | Planned effort |
 |---|---|---|---:|
-| Daniel Park | All three loaders; MNIST CNN and its experiments | Data preparation and sample visualizations | 10 points |
+| Daniel Park | All three loaders; shared CNN trainer; MNIST architecture | Data preparation, sample visualizations, and tested handoff | 10 points |
 | Person 2 | ORL CNN and its experiments | Evaluation metrics and plotting that support both 10 and 40 classes | 10 points |
 | Person 3 | CIFAR CNN and its experiments | Detailed CIFAR results and error analysis | 10 points |
-| Person 4 | Shared training and execution pipeline | Integration, reproducible result saving, report assembly | 10 points |
+| Person 4 | MNIST experiments/results; settings and execution pipeline | Integration, reproducible result saving, report assembly | 10 points |
 
-## Daniel Park - Data preparation and MNIST
+## Implementation branch
 
-**Proposed files:** `Dataset_Loader_MNIST.py`, `Dataset_Loader_ORL.py`, `Dataset_Loader_CIFAR.py`, `Visualize_Data.py`, `Method_CNN_MNIST.py`, and corresponding tests.
+Daniel's loaders, shared trainer, MNIST model, tests, figures, and handoff are
+on **`daniel-stage3-data-mnist`**. Integrate that branch into your working
+branch before depending on those components. This planning update on `main`
+does not merge the implementation. Handoff instructions are in
+`Daniel/HANDOFF.md` on the implementation branch.
+
+## Daniel Park - Data preparation, shared trainer, and MNIST architecture
+
+**Proposed files:** `Dataset_Loader_MNIST.py`, `Dataset_Loader_ORL.py`, `Dataset_Loader_CIFAR.py`, `Visualize_Data.py`, `Method_CNN.py`, `Method_CNN_MNIST.py`, and corresponding tests. Task notes and handoff instructions live in `Daniel/`.
 
 Responsibilities:
 
@@ -39,13 +47,13 @@ Responsibilities:
 2. Return float32 image arrays in channel-first order and int64 labels. Support loading the provided training and testing partitions separately.
 3. Divide pixels by 255 for the shared baseline. Add MNIST's single channel, select one ORL channel, and reorder CIFAR's channels. Convert ORL labels from 1-40 to 0-39 for training, keeping their original identity available for display.
 4. Save a small labeled sample grid and class-count chart for each dataset. Do not add the unhelpful raw/normalized pixel histograms from Stage 2.
-5. Implement the MNIST CNN architecture on top of Person 4's common training class.
-6. Run the MNIST baseline and two configuration variants listed below, then the final chosen MNIST test run.
-7. Test all loaders and MNIST input/output shapes; write the dataset/preprocessing and MNIST report material.
+5. Implement one shared `Method_CNN` base class for mini-batch training, per-epoch training/validation measurements, and mini-batch prediction. Aggregate measurements across all examples, including the last partial batch. Support the agreed training/history/run interfaces below, seed setting, configurable optimizer, and a scalar mean loss. CPU operation is sufficient.
+6. Integrate the MNIST architecture with that base and verify it with small synthetic runs. Supply the three planned architecture configurations and instructions for Person 4 to run the full experiments later. Use a fresh model for each independent experiment and final run.
+7. Test the loaders, shared trainer, and MNIST integration. Write dataset/preprocessing and architecture report material, clearly distinguishing verified implementation from pending experiment results.
 
-**Deliverables:** three working loaders, dataset checks and sample figures, MNIST architecture, its experiment table and curves, final MNIST evaluation, and approximately one page of report material.
+**Deliverables:** three working loaders, dataset checks and sample figures, shared trainer and tests, template-compatible MNIST model, preprocessing/architecture text, and a reproducible handoff. Person 4 produces the MNIST experiment table, curves, final evaluation, and results discussion.
 
-**Effort:** loaders/preparation/visualization 4 points; MNIST architecture and experiments 4; tests and writing 2.
+**Effort:** loaders/preparation/visualization 4 points; MNIST architecture/integration 1; shared trainer 3; tests, writing, and handoff 2.
 
 ## Person 2 - ORL and evaluation tools
 
@@ -81,22 +89,22 @@ Responsibilities:
 
 **Effort:** CIFAR architecture/training/experiments 8 points; tests, analysis presentation, and writing 2. No additional shared infrastructure is assigned because this dataset is the most demanding classification task in this plan.
 
-## Person 4 - Common training and integration
+## Person 4 - MNIST experiments, execution, and integration
 
-**Proposed files:** `Method_CNN.py` for common training behavior, `Setting_Stage3.py`, `Result_Saver.py`, `script_cnn.py`, `run_experiments.py`, and integration tests.
+**Proposed files:** `Setting_Stage3.py`, `Result_Saver.py`, `script_cnn.py`, `run_experiments.py`, integration tests, and MNIST experiment/results files. Reuse Daniel's `Method_CNN.py` rather than writing another training loop.
 
 Responsibilities:
 
-1. Implement one common mini-batch training loop used by the three model classes. Compute per-epoch training/validation measurements and final predictions in mini-batches too, rather than passing a whole dataset through the CNN at once. Aggregate loss and accuracy over all examples, including the final partial batch. Dataset owners define their own layers and forward passes. Preserve the professor's base-class conventions and avoid three copied training loops.
-2. Support train/validation/final-test modes, seed setting, selected optimizer/loss settings, and per-epoch history. A simple CPU path is sufficient; GPU execution is optional in the assignment.
+1. Run the MNIST baseline and two variants through Daniel's shared trainer, keeping the agreed split, seeds, epoch budget, optimizer, and other settings fixed. Select settings using validation results, train a fresh final model on all supplied MNIST training images, and evaluate the supplied test images. Generate curves and the MNIST results discussion using Person 2's tools.
+2. Configure train/validation/final-test modes, split/model seeds, optimizer, loss, and epoch settings through the settings/runner. Reuse the shared trainer's history and prediction API. A simple CPU path is sufficient; GPU execution is optional.
 3. Create the settings and command-line entry point selecting dataset and model. Build the agreed validation splits from training data only.
 4. Save configuration, evaluation split, metrics, history, and predictions in distinct run folders. Reuse cached results only when their experiment settings match. Keep validation and test results separate in summaries.
-5. Test the integrated pipeline on all three datasets with short runs. Each dataset owner remains responsible for debugging their own loader/model and producing their full experimental results.
-6. Assemble the four report contributions, write the brief introduction/conclusion, and enforce the five-page limit. Each contributor supplies finished text, captions, and compact figures; Person 4 does not write everyone else's sections.
+5. Test the integrated pipeline on all three datasets with short runs. Persons 2 and 3 produce their full ORL/CIFAR results; Person 4 produces MNIST results using Daniel's tested handoff.
+6. Assemble the report contributions, write the MNIST results plus brief introduction/conclusion, and enforce the five-page limit. Daniel supplies preprocessing/architecture text, and Persons 2 and 3 supply their finished sections and figures.
 
-**Deliverables:** shared trainer, settings/scripts, reproducible execution and result saving, integration checks, and assembled report.
+**Deliverables:** MNIST experiments, curves and final evaluation; settings/scripts; reproducible result saving; integration checks; and assembled report.
 
-**Effort:** common trainer/settings 5 points; execution/result saving 2; integration verification/report assembly 3.
+**Effort:** MNIST experiments/results 4 points; settings/execution/result saving 3; integration verification/report assembly 3.
 
 ## Interfaces to agree on before coding
 
@@ -115,21 +123,21 @@ These are team implementation choices, not additional professor requirements.
 | Run API | `run()` reads `self.data`, trains the model, and returns `{'pred_y': predictions, 'true_y': labels}` for `val` in validation mode or `test` in final mode. The setting records which partition was evaluated. |
 | Training history | `train_loss`, `train_acc`, `val_loss`, `val_acc`; validation lists stay empty for a final run without validation data. |
 
-Person 4 supplies the common training API and a minimal usable stub early. Model owners can test forward passes using synthetic arrays immediately; they do not need to wait for full loading/integration. Person 2 can test metrics with small known label/prediction arrays.
+Daniel supplies the common training API and tested MNIST subclass before his absence. Each model inherits from `Method_CNN`, which inherits the professor's `method` base and PyTorch's `nn.Module`. Dataset owners define layers and `forward()`. Each call to `train_model()` trains current weights with a new optimizer and replaces that call's history; independent experiments must construct fresh model instances. Person 4 supplies split/settings/runner integration. Model owners can test forward passes immediately; Person 2 can test metrics with small known label/prediction arrays.
 
 ## Bounded experiment plan
 
-Start with a simple working baseline for each dataset. Each model owner then runs two variants changing one selected setting at a time while holding that dataset's split, seed, epoch budget, optimizer, and other settings fixed.
+Start with a simple working baseline for each dataset. Each experiment owner then runs two variants changing one selected setting at a time while holding that dataset's split, seed, epoch budget, optimizer, and other settings fixed.
 
 | Owner | Dataset | Variant 1 | Variant 2 |
 |---|---|---|---|
-| Daniel | MNIST | Kernel size, e.g. 3 vs 5 | Max versus average pooling |
+| Person 4, using Daniel's model | MNIST | Kernel size, e.g. 3 vs 5 | Max versus average pooling |
 | Person 2 | ORL | Number of convolution blocks | Classifier hidden-layer size |
 | Person 3 | CIFAR | Convolution stride | Cross-entropy versus MSE on softmax probabilities and one-hot targets |
 
 These cover a practical selection of the architecture/configuration examples in requirement 3-5. Stride, kernel, or depth changes must still produce valid tensor sizes. Record actual padding values; additional padding-only comparisons are optional if time permits. Do not promise an exhaustive sweep of every possible setting.
 
-The MSE conversion, if selected, belongs in the shared loss configuration with Person 4, using the existing tested Stage 2 wrapper where suitable. Person 3 owns running and interpreting that comparison; do not duplicate the trainer.
+The MSE comparison can use the existing `SoftmaxMSE` wrapper from Stage 2 as the shared trainer's `loss_function`. Person 4 exposes that choice in settings; Person 3 owns running and interpreting the comparison. Do not duplicate the trainer or loss wrapper.
 
 ## Validation and final evaluation
 
@@ -138,12 +146,12 @@ The MSE conversion, if selected, belongs in the shared loss configuration with P
 - Proposed CIFAR split: 40,000 training and 10,000 validation examples.
 - Proposed ORL split: eight training and one validation image per person, giving 320 training and 40 validation examples; retain all 40 identities in both groups. Do not split by person, which would change this closed-set classification task.
 - Keep the same split within each paired comparison. ORL uses the same three pre-agreed seed/split pairs across configurations; report individual scores plus their mean and sample standard deviation. These repeats change only the held-out training examples and random model initialization, never the supplied test partition.
-- After selecting settings, train a fresh final model on the complete supplied training partition and evaluate the supplied test partition. Each dataset owner runs this through Person 4's pipeline.
+- After selecting settings, train a fresh final model on the complete supplied training partition and evaluate the supplied test partition. Person 4 runs MNIST, Person 2 runs ORL, and Person 3 runs CIFAR through the shared pipeline.
 - Report validation comparisons separately from final test results. Do not calculate improvements by subtracting validation accuracy from test accuracy.
 
 ## Report and completion checks
 
-Each person prepares approximately one page of polished material. The final report must fit within five pages including the required content; reserve room for compact combined figures/tables and references as the provided report template allows. Page allocation is a planning guide, not a requirement to fill space.
+Daniel supplies polished dataset/preprocessing and MNIST architecture text. Person 4 supplies the MNIST experiment/results discussion, and Persons 2 and 3 supply ORL/evaluation and CIFAR sections. The final report must fit within five pages including required content; reserve room for compact combined figures/tables and references as the provided template allows.
 
 Before completion, confirm:
 
