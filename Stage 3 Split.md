@@ -31,15 +31,18 @@ The actual MNIST arrays are float64 with values from 0 to 255; they are not alre
 
 ## Implementation branch
 
-Daniel's loaders, shared trainer, MNIST model, tests, figures, and handoff are
+Daniel's loaders, shared trainer, MNIST model, tests, figures, and dataset checks are
 on **`daniel-stage3-data-mnist`**. Integrate that branch into your working
 branch before depending on those components. This planning update on `main`
-does not merge the implementation. Handoff instructions are in
-`Daniel/HANDOFF.md` on the implementation branch.
+does not merge the implementation. The shared trainer is in
+`local_code/stage_3_code/Method_CNN.py`, and `Method_CNN_MNIST.py` provides
+`MNISTCNN`. Both paths are under `ECS170_Fall_2026_Source_Code_Template/`.
+The interface contract below describes how the models and execution pipeline
+use these classes.
 
 ## Daniel Park - Data preparation, shared trainer, and MNIST architecture
 
-**Proposed files:** `Dataset_Loader_MNIST.py`, `Dataset_Loader_ORL.py`, `Dataset_Loader_CIFAR.py`, `Visualize_Data.py`, `Method_CNN.py`, `Method_CNN_MNIST.py`, and corresponding tests. Task notes and handoff instructions live in `Daniel/`.
+**Proposed files:** `Dataset_Loader_MNIST.py`, `Dataset_Loader_ORL.py`, `Dataset_Loader_CIFAR.py`, `Visualize_Data.py`, `Method_CNN.py`, `Method_CNN_MNIST.py`, and corresponding tests.
 
 Responsibilities:
 
@@ -99,7 +102,7 @@ Responsibilities:
 2. Configure train/validation/final-test modes, split/model seeds, optimizer, loss, and epoch settings through the settings/runner. Reuse the shared trainer's history and prediction API. A simple CPU path is sufficient; GPU execution is optional.
 3. Create the settings and command-line entry point selecting dataset and model. Build the agreed validation splits from training data only.
 4. Save configuration, evaluation split, metrics, history, and predictions in distinct run folders. Reuse cached results only when their experiment settings match. Keep validation and test results separate in summaries.
-5. Test the integrated pipeline on all three datasets with short runs. Persons 2 and 3 produce their full ORL/CIFAR results; Person 4 produces MNIST results using Daniel's tested handoff.
+5. Test the integrated pipeline on all three datasets with short runs. Persons 2 and 3 produce their full ORL/CIFAR results; Person 4 produces MNIST results using Daniel's tested model and trainer.
 6. Assemble the report contributions, write the MNIST results plus brief introduction/conclusion, and enforce the five-page limit. Daniel supplies preprocessing/architecture text, and Persons 2 and 3 supply their finished sections and figures.
 
 **Deliverables:** MNIST experiments, curves and final evaluation; settings/scripts; reproducible result saving; integration checks; and assembled report.
