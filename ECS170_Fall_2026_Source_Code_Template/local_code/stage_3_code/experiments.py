@@ -27,7 +27,9 @@ VARIANTS = {'baseline': {}, 'kernel5': {'kernel_size': 5},
 def split_training(data, seed, fraction=0.1):
     """Stratify only the supplied training partition; return disjoint partitions."""
     indices = np.arange(len(data['y']))
-    train, val = train_test_split(indices, test_size=fraction, random_state=seed,
+    # A stratified holdout needs at least one example per class (ORL has 40).
+    val_count = max(int(np.ceil(len(indices) * fraction)), len(np.unique(data['y'])))
+    train, val = train_test_split(indices, test_size=val_count, random_state=seed,
                                   stratify=data['y'])
     return ({k: v[train] for k, v in data.items()},
             {k: v[val] for k, v in data.items()})

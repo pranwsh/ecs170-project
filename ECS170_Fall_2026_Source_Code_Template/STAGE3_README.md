@@ -6,7 +6,7 @@ Run commands from `ECS170_Fall_2026_Source_Code_Template`. Install Python depend
 
 The dataset loaders produce float32 images scaled to [0,1] in NCHW order. ORL uses one grayscale channel and maps person IDs 1–40 to class indices 0–39. MNIST and CIFAR labels are already 0–9. The supplied training and test partitions are preserved. Model outputs are raw logits; the trainer uses Adam and cross-entropy by default.
 
-The experiment runner supports baseline, 5×5 kernel, and average pooling variants. A stratified 10% of the supplied training data is held out for validation. Use identical split and model seeds for paired comparisons. Record validation results and select a configuration *before* running test mode. Test mode trains a fresh model on the complete supplied training partition; it must not be used for hyperparameter or seed selection. In ORL the 40-image test set means a single error changes accuracy by 2.5 percentage points.
+The experiment runner supports baseline, 5×5 kernel, and average pooling variants. A stratified 10% of the supplied training data is held out for validation, or one example per class if that is larger (40 examples for ORL). Use identical split and model seeds for paired comparisons. Record validation results and select a configuration *before* running test mode. Test mode trains a fresh model on the complete supplied training partition; it must not be used for hyperparameter or seed selection. In ORL the 40-image test set means a single error changes accuracy by 2.5 percentage points.
 
 Example commands (these execute training, and were not run as part of setup):
 

@@ -30,6 +30,13 @@ class ExperimentTests(unittest.TestCase):
         self.assertEqual(set(val['y']), {0, 1, 2, 3})
         np.testing.assert_array_equal(val['X'], split_training(data, 2)[1]['X'])
 
+    def test_orl_holdout_has_at_least_one_per_class(self):
+        data = {'X': np.arange(360)[:, None], 'y': np.repeat(np.arange(40), 9)}
+        train, val = split_training(data, 2)
+        self.assertEqual(len(val['y']), 40)
+        self.assertEqual(len(np.unique(val['y'])), 40)
+        self.assertEqual(len(train['y']), 320)
+
     def test_metrics_and_artifacts(self):
         metrics = classification_metrics(np.array([0, 1, 1]), np.array([0, 0, 1]), 2)
         self.assertEqual(metrics['correct'], 2)
