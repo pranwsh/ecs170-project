@@ -1,0 +1,16 @@
+{
+  "dataset": "mnist",
+  "mode": "validation",
+  "variant": "kernel5",
+  "model_options": {
+    "kernel_size": 5
+  },
+  "seed": 2,
+  "split_seed": 2,
+  "epochs": 20,
+  "batch_size": 128,
+  "learning_rate": 0.001,
+  "device": "cpu",
+  "train_count": 54000,
+  "evaluation_count": 6000
+}
