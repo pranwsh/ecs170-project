@@ -1,0 +1,14 @@
+{
+  "dataset": "orl",
+  "mode": "test",
+  "variant": "baseline",
+  "model_options": {},
+  "seed": 3,
+  "split_seed": 2,
+  "epochs": 20,
+  "batch_size": 32,
+  "learning_rate": 0.001,
+  "device": "cpu",
+  "train_count": 360,
+  "evaluation_count": 40
+}

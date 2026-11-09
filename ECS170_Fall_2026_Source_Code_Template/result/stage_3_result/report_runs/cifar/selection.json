@@ -1,0 +1,1 @@
+{"validation_accuracy": {"baseline": 0.7248, "kernel5": 0.7326, "average_pool": 0.7174}, "selected": "kernel5"}
