@@ -1,8 +1,11 @@
-"""Tokenize text and encode it using a training-only vocabulary."""
+"""Tokenize text, encode it with a training vocabulary, and prepare batches."""
 
 import html
 import re
 from collections import Counter
+
+import torch
+from torch.nn.utils.rnn import pad_sequence
 
 
 LINE_BREAK_PATTERN = re.compile(r'<br\s*/?>', re.IGNORECASE)
@@ -63,3 +66,30 @@ def encode(text, vocabulary, *, max_length=None, add_eos=False):
     if add_eos:
         encoded.append(token_to_id['<EOS>'])
     return encoded
+
+
+def collate_reviews(batch):
+    """Right-pad (encoded review, label) pairs and retain their real lengths."""
+    # Preserve example order so the padded rows and sentiment labels stay aligned.
+    sequences = [torch.tensor(tokens, dtype=torch.long) for tokens, label in batch]
+    labels = torch.tensor([label for tokens, label in batch], dtype=torch.long)
+    lengths = torch.tensor([len(sequence) for sequence in sequences], dtype=torch.long)
+
+    # Padding ID 0 fills only positions after each review's actual tokens.
+    return {'input_ids': pad_sequence(sequences, batch_first=True, padding_value=0),
+            'lengths': lengths, 'labels': labels}
+
+
+def collate_jokes(batch):
+    """Shift encoded jokes ending in EOS into padded next-token input/target pairs."""
+    sequences = [torch.tensor(tokens, dtype=torch.long) for tokens in batch]
+
+    # Shift each joke separately so its final target is EOS, not another joke.
+    inputs = [sequence[:-1] for sequence in sequences]
+    targets = [sequence[1:] for sequence in sequences]
+    lengths = torch.tensor([len(sequence) for sequence in inputs], dtype=torch.long)
+
+    # Padding targets use ID 0 so they can be excluded from next-token loss.
+    return {'input_ids': pad_sequence(inputs, batch_first=True, padding_value=0),
+            'target_ids': pad_sequence(targets, batch_first=True, padding_value=0),
+            'lengths': lengths}
