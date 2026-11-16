@@ -1,0 +1,72 @@
+{
+  "split_seed": 2,
+  "split_file": "splits.json",
+  "vocabulary_file": "review_vocabulary.json",
+  "vocabulary_size": 20002,
+  "partitions": {
+    "train": {
+      "128": {
+        "truncated_count": 19021,
+        "retained_tokens": 2747434,
+        "unknown_tokens": 57188,
+        "review_count": 22500,
+        "original_tokens": 6068247,
+        "truncated_fraction": 0.8453777777777778,
+        "retained_fraction": 0.4527557958665822,
+        "unknown_fraction": 0.020815058705686833
+      },
+      "256": {
+        "truncated_count": 8087,
+        "retained_tokens": 4358019,
+        "unknown_tokens": 94846,
+        "review_count": 22500,
+        "original_tokens": 6068247,
+        "truncated_fraction": 0.3594222222222222,
+        "retained_fraction": 0.7181677014795211,
+        "unknown_fraction": 0.021763558167139704
+      },
+      "unlimited": {
+        "truncated_count": 0,
+        "retained_tokens": 6068247,
+        "unknown_tokens": 138098,
+        "review_count": 22500,
+        "original_tokens": 6068247,
+        "truncated_fraction": 0.0,
+        "retained_fraction": 1.0,
+        "unknown_fraction": 0.0227574783953257
+      }
+    },
+    "val": {
+      "128": {
+        "truncated_count": 2110,
+        "retained_tokens": 305370,
+        "unknown_tokens": 6862,
+        "review_count": 2500,
+        "original_tokens": 678812,
+        "truncated_fraction": 0.844,
+        "retained_fraction": 0.4498594603513197,
+        "unknown_fraction": 0.022471100632020173
+      },
+      "256": {
+        "truncated_count": 931,
+        "retained_tokens": 485456,
+        "unknown_tokens": 11500,
+        "review_count": 2500,
+        "original_tokens": 678812,
+        "truncated_fraction": 0.3724,
+        "retained_fraction": 0.7151553007312775,
+        "unknown_fraction": 0.02368906759829933
+      },
+      "unlimited": {
+        "truncated_count": 0,
+        "retained_tokens": 678812,
+        "unknown_tokens": 17013,
+        "review_count": 2500,
+        "original_tokens": 678812,
+        "truncated_fraction": 0.0,
+        "retained_fraction": 1.0,
+        "unknown_fraction": 0.02506290401466091
+      }
+    }
+  }
+}
