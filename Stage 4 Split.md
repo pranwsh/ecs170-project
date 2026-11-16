@@ -46,11 +46,11 @@ Model owners run their own full experiments through Person 4's pipeline. Everyon
 **Files:** `Dataset_Loader_Reviews.py`, `Dataset_Loader_Jokes.py`, `Data_Splits.py`, `Text_Preprocessing.py`, `script/stage_4_script/inspect_data.py`, and focused tests.
 
 1. Implement template-compatible loaders for the supplied review directories and joke CSV. Keep supplied review training and test partitions separate. Read joke text with a CSV reader so commas and quoted text are handled correctly; exclude the ID column from model inputs.
-2. Own the shared seed-2 training/validation splits described below and persist source IDs. Implement a simple tokenizer and a separate vocabulary for each task, fitted on its training split only. Preserve negation and avoid aggressive stop-word removal. Save the actual split vocabularies for teammates to consume.
+2. Own the shared seed-2 training/validation splits described below and persist source IDs. Keep identical reviews and identical jokes in the same partition; stratify review groups by sentiment. Implement a simple tokenizer and separate training-only vocabularies, preserving negation. Save the actual split vocabularies for teammates to consume.
 3. Supply `<PAD>` and `<UNK>` tokens, with `<PAD>` ID 0. Include an `<EOS>` end-of-joke token for generation. Turn tokenized text into integer sequences and map unseen words to `<UNK>`.
 4. Implement the agreed batch preparation below. Pad within each batch; return actual sequence lengths. Make review truncation explicit and record the chosen maximum length. For generation, shift the same joke by one token to create next-word inputs and targets; never join unrelated jokes into one sequence.
 5. Record class counts, token-length distributions, fitted vocabulary sizes, training coverage, validation unknown-token rates, and actual encoded batches. Save the split IDs, vocabularies, measured JSON summary, and figures under `result/stage_4_result/data_inspection/`.
-6. Independently compare 128 versus 256 review tokens using the same saved split and vocabulary. Report truncated-review counts, retained-token fractions, and unknown-token rates after truncation. This is a data-retention comparison, not a classifier-accuracy experiment; it requires no model, trainer, metrics helper, or teammate work. Any later model-accuracy comparison is optional work for the classification owner.
+6. Compare 128 review tokens, 256 review tokens, and no truncation using the same saved split and vocabulary. Report truncated-review counts, retained-token fractions, and unknown-token rates. Save the JSON results and figure under `result/stage_4_result/review_length_comparison/`. This measures input retention and needs no model or trainer. Any later accuracy comparison is optional classification work.
 7. Verify loading, labels, vocabulary isolation, unknown words, padding, and shifted generation targets. Supply dataset/preprocessing report text and the concrete handoff needed by the other members.
 
 **Effort:** loading/tokenization/vocabulary 4; splits/batching/data summaries 3; data-only comparison 1; verification/report 2.
@@ -115,19 +115,32 @@ These are team implementation choices, not additional professor requirements. Mo
 
 Use the professor's base classes and existing directory conventions. Task owners define layers/forward behavior; Person 4 owns training loops; Daniel owns token IDs and batches. Do not create separate competing trainers in each model file.
 
+## Data preparation and length-comparison handoff
+
+Implementation branch: `daniel-stage4-data-preprocessing`. Run these commands from `ECS170_Fall_2026_Source_Code_Template/` after integrating its implementation:
+
+```powershell
+python script/stage_4_script/inspect_data.py
+python script/stage_4_script/compare_review_lengths.py
+```
+
+The first command saves shared split IDs, training vocabularies, data checks, batch examples, and descriptive figures. The second consumes those saved artifacts without modifying them and compares 128 tokens, 256 tokens, and full reviews. Its numeric results and figure are separate from the preparation outputs.
+
+Keep 256 tokens as the common baseline for required recurrent-cell experiments. An uncapped sequence uses `encode(..., max_length=None)` and the existing batch helper; it retains the same training vocabulary. The data-only comparison reports no classification accuracy or training-time measurements. Optional model experiments can evaluate the accuracy/resource tradeoff separately.
+
 ## Bounded experiment and evaluation plan
 
 1. **Training budget:** six validation-comparison fits (RNN/LSTM/GRU for each task), followed by three final full-training classification fits: **nine full fits**, plus short pilots. Daniel's data-only preprocessing comparison adds no training runs. Optional final generation retraining or extra tuning adds more. Keep settings fixed within each task and measure pilot runtime before choosing a modest epoch budget.
-2. **Classification validation:** stratified 90/10 split of the supplied training reviews: 22,500 training and 2,500 validation, with seed 2. Preserve the supplied 25,000 test reviews for final evaluation.
+2. **Classification validation:** group identical reviews, stratify groups by sentiment, and hold out approximately 10% with seed 2. The saved split contains 22,500 training and 2,500 validation records. Preserve the supplied 25,000 test reviews for final evaluation; the saved IDs are authoritative for membership.
 3. **Generation validation:** split whole jokes approximately 90/10 with seed 2 before vocabulary construction or creating shifted sequences. Keep identical full joke texts in the same partition if duplicates exist. Save the actual counts and split IDs. Do not split tokens from one joke between training and validation.
-4. **Data-only comparison:** Daniel compares retention/truncation/unknown-token rates for 128 and 256 review tokens now, using his saved splits and vocabulary. Classification-accuracy sweeps are optional later; do not promise exhaustive tuning or a second loss function.
+4. **Data-only comparison:** compare retention/truncation/unknown-token rates for 128 tokens, 256 tokens, and no truncation using the same saved splits and vocabulary. Classification-accuracy sweeps are optional; do not promise exhaustive tuning or a second loss function.
 5. **Final classification:** rebuild the vocabulary once from the complete supplied training partition, using the same tokenizer and vocabulary cap. Use that same final vocabulary across fresh RNN/LSTM/GRU models, train each frozen configuration on the full supplied training partition, and evaluate the supplied test partition. Never fit the vocabulary on supplied test text.
 6. **Final generation:** report held-out validation measurements from the comparison runs. A selected model may then be retrained on all supplied jokes for final example generation, with its vocabulary fitted only to that final training corpus. Clearly distinguish validation measurements from full-corpus training examples. There is no supplied joke test partition.
 7. **GloVe:** optional follow-up classification comparison owned by the classification owner. Start with learned embeddings for the required baseline.
 
 ## Development order and handoffs
 
-1. Prepare both loaders, shared split IDs, training-only vocabularies, encoded batch checks, data figures, and the data-only 128/256 comparison.
+1. Prepare both loaders, shared split IDs, training-only vocabularies, encoded batch checks, data figures, and the 128/256/uncapped data comparison.
 2. Use the saved batches/splits/vocabularies for model development and integrate the shared training runner. Fixture batches support initial model and trainer checks.
 3. Verify all three recurrent cells through the shared task pipelines and run the six validation comparisons.
 4. Task owners select settings from validation results, run the three final classification fits, and produce final results/examples. Everyone delivers finished figures/tables and paste-ready report text for their contribution. Person 4 assembles the report.
