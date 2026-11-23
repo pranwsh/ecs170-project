@@ -23,3 +23,46 @@ Repeat for `orl` and `cifar`. Use `--epochs`, `--batch-size`, `--learning-rate`,
 Run non-training checks with `python -m unittest tests.test_stage3_experiments tests.test_stage3_data -v`. Existing trainer and MNIST tests also run short synthetic training; run them separately when training is permitted: `python -m unittest tests.test_stage3_trainer tests.test_stage3_mnist -v`.
 
 `Stage_3_Report_Draft.docx` is a copy of the supplied template with preliminary text and explicit placeholders. Complete the missing team information, source link, plots and measured results after experiments, and verify the final document is at most five pages.
+
+## CIFAR-10 error analysis (no training)
+
+For an existing CIFAR run, regenerate its per-class precision, recall, support,
+and error counts and its ranked **directional** confusions from the saved
+`config.json`, `predictions.npz`, and `metrics.json`:
+
+```sh
+python -m script.stage_3_script.analyze_cifar_errors result/stage_3_result/experiments/cifar/final_2epoch --output cifar_error_analysis.json
+python -m unittest discover -s tests -p 'test_stage3_cifar_analysis.py' -v
+```
+
+Omit `--output` to print JSON. The output file must not already exist. Matrix
+rows are true classes and columns are predictions; confusion fractions use the
+true-class support as denominator. Zero-support recall and zero-prediction
+precision are defined as zero. The tool verifies the saved confusion matrix,
+correct count and total against the predictions; use the same run's artifacts
+together. It does not load data or retrain, and analyzing test errors must not
+be used to select a model or seed.
+
+## Experiment summaries and reproducibility
+
+From this directory, regenerate the tables after adding runs (the output is
+replaced if it already exists):
+
+```sh
+python -m script.stage_3_script.summarize_experiments --output result/stage_3_result/experiments/SUMMARY.md
+python -m unittest discover -s tests -p 'test_stage3*.py' -v
+```
+
+The summary lists validation and test separately and includes the run settings;
+compare only runs with matching budgets and paired seeds. See
+`STAGE3_LEARNING_CURVE_ANALYSIS.md` and `STAGE3_ORL_REPEAT_ANALYSIS.md` for
+reproduction commands and caveats. The additional experiments were run from
+base commit `78b691ee709663d3acab87d6c3539ce4fe005c0f` in the Nix development
+environment; new analysis and tests were uncommitted. Capture the current commit
+and `git status` when reproducing, since uncommitted changes affect provenance.
+
+For the existing two-epoch CIFAR final test, dog recall is 26.3%, compared with
+82.6% for automobile. The largest directional confusion is dog → cat (300 of
+1,000 dogs). These are descriptive test-set findings, not a basis for tuning.
+The complete per-class and directional results are in
+`result/stage_3_result/experiments/cifar/final_2epoch_error_analysis.json`.
