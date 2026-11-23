@@ -1,0 +1,17 @@
+{
+  "task": "generation",
+  "cell": "gru",
+  "mode": "validation",
+  "seed": 2,
+  "epochs": 5,
+  "batch_size": 64,
+  "embed_dim": 128,
+  "hidden_dim": 256,
+  "num_layers": 1,
+  "review_length": 256,
+  "learning_rate": 0.001,
+  "device": "cpu",
+  "vocabulary_size": 4488,
+  "parameter_count": 2024328,
+  "evaluated_partition": "validation"
+}
