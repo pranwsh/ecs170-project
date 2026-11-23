@@ -1,0 +1,17 @@
+{
+  "task": "classification",
+  "cell": "rnn",
+  "mode": "validation",
+  "seed": 2,
+  "epochs": 5,
+  "batch_size": 64,
+  "embed_dim": 32,
+  "hidden_dim": 64,
+  "num_layers": 1,
+  "review_length": 256,
+  "learning_rate": 0.001,
+  "device": "cpu",
+  "vocabulary_size": 20002,
+  "parameter_count": 646466,
+  "evaluated_partition": "validation"
+}
