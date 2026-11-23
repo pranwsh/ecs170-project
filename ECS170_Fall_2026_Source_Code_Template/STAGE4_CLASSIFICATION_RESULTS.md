@@ -1,0 +1,9 @@
+# Stage 4 classification pilot comparison
+
+The three validation configurations use seed 2, one epoch, batch size 64, learned 32-dimensional embeddings, hidden size 64, one recurrent layer, 256-token truncation, and Adam at 0.001. The saved training-only vocabulary and common split are used for validation. Validation accuracy and loss: RNN 0.5536 / 0.68408, LSTM 0.6392 / 0.63195, GRU 0.6720 / 0.61483. GRU is the provisional recommendation **on validation accuracy and loss**, not on test ranking. Parameter counts differ (646,466 / 665,282 / 659,010 respectively).
+
+These are one-epoch pilots, not demonstrated converged models: a single point cannot show a learning trajectory. Further validation-only model development and multi-epoch experiments are needed before claiming convergence. Final fits use a vocabulary built from the supplied training set and evaluate the supplied test set. Previous RNN/LSTM test artifacts already existed when this review began, so the timing of the original freeze cannot be independently established; do not use their test scores for selection or further tuning. The final GRU run uses the same pre-existing one-epoch validation configuration, not a test-optimized setting.
+
+The saved artifacts include weights, vocabularies, splits, predictions, metrics and plots. Integrity review checked split hashes, disjoint source IDs, validation vocabulary equality with the handoff, readable model weights and recomputed classification metrics. This is not a full independent rerun of each model or a proof of no cross-partition duplicate review texts. Classification error analysis and architecture diagram, longer experiments and report contributions remain outstanding; the report has not been assembled.
+
+Observed supplied-test accuracies (descriptive only): RNN 0.55592, LSTM 0.60516, GRU 0.64272. All three final vocabularies are identical. The Stage 4 focused suite was rerun after review: 55 passed and 9 subtests passed on CPU.

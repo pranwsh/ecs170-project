@@ -1,0 +1,20 @@
+{
+  "loss": 0.6319500709533692,
+  "acc": 0.6392,
+  "accuracy": 0.6392,
+  "precision_positive": 0.634184068058778,
+  "recall_positive": 0.6565252201761409,
+  "f1_positive": 0.6451612903225806,
+  "positive_label": 1,
+  "averaging": "binary",
+  "confusion_matrix": [
+    [
+      778,
+      473
+    ],
+    [
+      429,
+      820
+    ]
+  ]
+}
