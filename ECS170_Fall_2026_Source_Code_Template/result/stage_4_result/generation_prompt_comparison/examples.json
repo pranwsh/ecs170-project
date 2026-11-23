@@ -1,0 +1,228 @@
+{
+  "prompts": 9,
+  "copy_run_threshold": 6,
+  "max_new_tokens": 30,
+  "runs": [
+    "result/stage_4_result/validation_generation_rnn_20ep",
+    "result/stage_4_result/validation_generation_lstm_20ep",
+    "result/stage_4_result/validation_generation_gru_20ep"
+  ],
+  "examples": [
+    {
+      "prompt": "why are bears",
+      "source": "train",
+      "match_count": 1,
+      "original_id": "1340",
+      "original": "Why are bears so hairy ? They don't have salons in the jungle !",
+      "outputs": {
+        "rnn": {
+          "text": "why are bears so cranky? a stick.",
+          "label": "new",
+          "longest_shared_run": 2
+        },
+        "lstm": {
+          "text": "why are bears afraid of the road? because he was a little.",
+          "label": "new",
+          "longest_shared_run": 4
+        },
+        "gru": {
+          "text": "why are bears so good at the road? because he was a little.",
+          "label": "new",
+          "longest_shared_run": 4
+        }
+      }
+    },
+    {
+      "prompt": "what's a pirate's",
+      "source": "train",
+      "match_count": 1,
+      "original_id": "1566",
+      "original": "What's a pirate's favorite letter? The C.",
+      "outputs": {
+        "rnn": {
+          "text": "what's a pirate's favorite letter? a stick",
+          "label": "new",
+          "longest_shared_run": 2
+        },
+        "lstm": {
+          "text": "what's a pirate's favorite favorite? a cow.",
+          "label": "new",
+          "longest_shared_run": 2
+        },
+        "gru": {
+          "text": "what's a pirate's favorite genre of a tree? a carrot",
+          "label": "new",
+          "longest_shared_run": 4
+        }
+      }
+    },
+    {
+      "prompt": "why does thor",
+      "source": "train",
+      "match_count": 1,
+      "original_id": "389",
+      "original": "Why does Thor have insomnia? He's up all night to get Loki.",
+      "outputs": {
+        "rnn": {
+          "text": "why does thor have a lot of a tree? a stick",
+          "label": "new",
+          "longest_shared_run": 4
+        },
+        "lstm": {
+          "text": "why does thor have a pirate? because they have a little!",
+          "label": "new",
+          "longest_shared_run": 3
+        },
+        "gru": {
+          "text": "why does thor have a kickstand? because it was a little.",
+          "label": "new",
+          "longest_shared_run": 4
+        }
+      }
+    },
+    {
+      "prompt": "which cheese is",
+      "source": "validation",
+      "match_count": 1,
+      "original_id": "1209",
+      "original": "Which cheese is the loneliest? Prov-alone!",
+      "outputs": {
+        "rnn": {
+          "text": "which cheese is a man that doesn't have to change a lightbulb? a pool table.",
+          "label": "new",
+          "longest_shared_run": 5
+        },
+        "lstm": {
+          "text": "which cheese is a man walks into a bar........................",
+          "label": "partly copied",
+          "longest_shared_run": 6
+        },
+        "gru": {
+          "text": "which cheese is a lot of a tree? a stick.",
+          "label": "new",
+          "longest_shared_run": 4
+        }
+      }
+    },
+    {
+      "prompt": "how do porcupines",
+      "source": "validation",
+      "match_count": 1,
+      "original_id": "1020",
+      "original": "How do porcupines play leapfrog? Very carefully",
+      "outputs": {
+        "rnn": {
+          "text": "how do porcupines have a lot of a tree? a stick.",
+          "label": "new",
+          "longest_shared_run": 4
+        },
+        "lstm": {
+          "text": "how do porcupines you get when you cross a cow? a buccaneer!",
+          "label": "partly copied",
+          "longest_shared_run": 6
+        },
+        "gru": {
+          "text": "how do porcupines make a squid laugh? a buccaneer!",
+          "label": "new",
+          "longest_shared_run": 4
+        }
+      }
+    },
+    {
+      "prompt": "why do java",
+      "source": "validation",
+      "match_count": 1,
+      "original_id": "1614",
+      "original": "Why do Java developers wear glasses? Because they don't C#",
+      "outputs": {
+        "rnn": {
+          "text": "why do java have to a party? a stick",
+          "label": "new",
+          "longest_shared_run": 3
+        },
+        "lstm": {
+          "text": "why do java like to get their? because they are you get their.",
+          "label": "new",
+          "longest_shared_run": 3
+        },
+        "gru": {
+          "text": "why do java like to ride elevators? because they have boooogers.",
+          "label": "new",
+          "longest_shared_run": 4
+        }
+      }
+    },
+    {
+      "prompt": "my dog said",
+      "source": "new",
+      "match_count": 0,
+      "original_id": null,
+      "original": null,
+      "outputs": {
+        "rnn": {
+          "text": "my dog said to the other, \" i don't know why the frisbee was the road.",
+          "label": "new",
+          "longest_shared_run": 4
+        },
+        "lstm": {
+          "text": "my dog said, i was a joke about the other day.....................",
+          "label": "new",
+          "longest_shared_run": 3
+        },
+        "gru": {
+          "text": "my dog said he was a little..........................",
+          "label": "new",
+          "longest_shared_run": 4
+        }
+      }
+    },
+    {
+      "prompt": "why is pizza",
+      "source": "new",
+      "match_count": 0,
+      "original_id": null,
+      "original": null,
+      "outputs": {
+        "rnn": {
+          "text": "why is pizza always has the alphabet? because it was a little boogie.",
+          "label": "new",
+          "longest_shared_run": 4
+        },
+        "lstm": {
+          "text": "why is pizza the road? because it was a little.",
+          "label": "new",
+          "longest_shared_run": 5
+        },
+        "gru": {
+          "text": "why is pizza the richest country in the world? because he was a little.",
+          "label": "partly copied",
+          "longest_shared_run": 7
+        }
+      }
+    },
+    {
+      "prompt": "a robot walks",
+      "source": "new",
+      "match_count": 0,
+      "original_id": null,
+      "original": null,
+      "outputs": {
+        "rnn": {
+          "text": "a robot walks into a bar...........................",
+          "label": "new",
+          "longest_shared_run": 3
+        },
+        "lstm": {
+          "text": "a robot walks into a bar...........................",
+          "label": "new",
+          "longest_shared_run": 3
+        },
+        "gru": {
+          "text": "a robot walks into a bar...........................",
+          "label": "new",
+          "longest_shared_run": 3
+        }
+      }
+    }
+  ]
+}
