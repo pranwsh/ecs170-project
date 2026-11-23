@@ -1,0 +1,16 @@
+{
+  "dataset": "orl",
+  "mode": "validation",
+  "variant": "average_pool",
+  "model_options": {
+    "pooling": "average"
+  },
+  "seed": 3,
+  "split_seed": 3,
+  "epochs": 20,
+  "batch_size": 32,
+  "learning_rate": 0.001,
+  "device": "cpu",
+  "train_count": 320,
+  "evaluation_count": 40
+}
